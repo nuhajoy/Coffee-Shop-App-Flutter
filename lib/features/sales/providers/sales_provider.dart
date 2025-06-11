@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:coffee_management/features/sales/models/sales_model.dart';
-import 'package:coffee_management/features/inventory/models/inventory_model.dart';
 import 'package:coffee_management/features/sales/services/sales_service.dart';
 
 final salesServiceProvider = Provider<SalesService>((ref) => SalesService());
