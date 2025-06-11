@@ -39,4 +39,39 @@ class InventoryService {
     }
   }
 
+   // Add new inventory item
+  Future<InventoryItem> addItem(InventoryItem item) async {
+    try {
+      final now = DateTime.now();
+      final newItem = item.copyWith(
+        id: _uuid.v4(),
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      await _supabase.from(_tableName).insert(newItem.toJson());
+      return newItem;
+    } catch (e) {
+      throw Exception('Failed to add inventory item: $e');
+    }
+  }
+
+  // Update inventory item
+  Future<InventoryItem> updateItem(InventoryItem item) async {
+    try {
+      final updatedItem = item.copyWith(
+        updatedAt: DateTime.now(),
+      );
+
+      await _supabase
+          .from(_tableName)
+          .update(updatedItem.toJson())
+          .eq('id', item.id);
+
+      return updatedItem;
+    } catch (e) {
+      throw Exception('Failed to update inventory item: $e');
+    }
+  }
+
 
