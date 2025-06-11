@@ -22,3 +22,14 @@ final upcomingShiftsProvider = FutureProvider<List<Shift>>((ref) {
   final service = ref.watch(shiftServiceProvider);
   return service.getUpcomingShifts();
 });
+// All users (for admin to assign shifts) - RENAMED to avoid conflict
+final shiftAllUsersProvider = FutureProvider<List<auth_models.User>>((ref) {
+  final service = ref.watch(shiftServiceProvider);
+  return service.getAllUsers();
+});
+
+// Check if current user is admin
+final isShiftAdminProvider = FutureProvider<bool>((ref) {
+  final service = ref.watch(shiftServiceProvider);
+  return service.isAdmin;
+});
