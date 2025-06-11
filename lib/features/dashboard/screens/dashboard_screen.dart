@@ -286,3 +286,76 @@ class DashboardScreen extends ConsumerWidget {
         ),
       );
     }
+    return Column(
+      children: shifts.take(3).map((shift) => Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppTheme.lightBrown.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border(
+            left: BorderSide(
+              width: 4,
+              color: _getStatusColor(shift.status),
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.schedule,
+              color: _getStatusColor(shift.status),
+              size: 20,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat('EEEE, MMM dd').format(shift.startTime),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    '${DateFormat('h:mm a').format(shift.startTime)} - ${DateFormat('h:mm a').format(shift.endTime)}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
+                  if (shift.notes.isNotEmpty)
+                    Text(
+                      shift.notes,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppTheme.textSecondary,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: _getStatusColor(shift.status).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                shift.status,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: _getStatusColor(shift.status),
+                ),
+              ),
+            ),
+          ],
+        ),
+      )).toList(),
+    );
+  }
+  
