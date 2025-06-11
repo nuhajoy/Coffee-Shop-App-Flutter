@@ -22,3 +22,21 @@ class Shift {
     this.createdAt,
     this.updatedAt,
   });
+  factory Shift.fromJson(Map<String, dynamic> json) {
+    return Shift(
+      id: json['id'] as String,
+      userId: json['user_id'] as String?, // Handle null values
+      employeeName: json['employee_name'] as String,
+      employeeEmail: json['employee_email'] as String,
+      startTime: DateTime.parse(json['start_time'] as String),
+      endTime: DateTime.parse(json['end_time'] as String),
+      status: json['status'] as String? ?? 'Scheduled',
+      notes: json['notes'] as String? ?? '',
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : null,
+    );
+  }
