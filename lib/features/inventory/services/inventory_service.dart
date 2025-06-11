@@ -8,3 +8,19 @@ class InventoryService {
   final SupabaseClient _supabase = supabase;
   final String _tableName = AppConstants.inventoryItemsTable;
   final _uuid = const Uuid();
+  // Get all inventory items
+  Future<List<InventoryItem>> getAllItems() async {
+    try {
+      final response = await _supabase
+          .from(_tableName)
+          .select()
+          .order('name', ascending: true);
+
+      return (response as List)
+          .map((item) => InventoryItem.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to get inventory items: $e');
+    }
+  }
+
