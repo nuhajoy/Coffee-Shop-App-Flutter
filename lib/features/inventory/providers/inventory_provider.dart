@@ -113,4 +113,9 @@ class InventoryController extends StateNotifier<List<InventoryItem>> {
     }
   }
 }
+// Controller provider
+final inventoryControllerProvider = StateNotifierProvider<InventoryController, List<InventoryItem>>((ref) {
+  final service = ref.watch(inventoryServiceProvider);
+  return InventoryController(service, ref);
+});
 
