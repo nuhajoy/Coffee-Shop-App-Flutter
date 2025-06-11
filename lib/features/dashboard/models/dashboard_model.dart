@@ -39,3 +39,51 @@ class DashboardStats {
     );
   }
 }
+class TopSellingItem {
+  final String id;
+  final String name;
+  final int quantitySold;
+  final double revenue;
+
+  TopSellingItem({
+    required this.id,
+    required this.name,
+    required this.quantitySold,
+    required this.revenue,
+  });
+
+  factory TopSellingItem.fromJson(Map<String, dynamic> json) {
+    return TopSellingItem(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      quantitySold: json['quantity_sold'] as int,
+      revenue: (json['revenue'] as num).toDouble(),
+    );
+  }
+}
+
+class NextShift {
+  final String id;
+  final String employeeName;
+  final DateTime startTime;
+  final DateTime endTime;
+  final String status;
+
+  NextShift({
+    required this.id,
+    required this.employeeName,
+    required this.startTime,
+    required this.endTime,
+    required this.status,
+  });
+
+  factory NextShift.fromJson(Map<String, dynamic> json) {
+    return NextShift(
+      id: json['id'] as String,
+      employeeName: json['employee_name'] as String,
+      startTime: DateTime.parse(json['start_time'] as String),
+      endTime: DateTime.parse(json['end_time'] as String),
+      status: json['status'] as String,
+    );
+  }
+}
