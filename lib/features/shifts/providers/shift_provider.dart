@@ -10,3 +10,15 @@ final shiftsProvider = FutureProvider<List<Shift>>((ref) {
   final service = ref.watch(shiftServiceProvider);
   return service.getAllShifts();
 });
+
+// Current user's shifts only
+final myShiftsProvider = FutureProvider<List<Shift>>((ref) {
+  final service = ref.watch(shiftServiceProvider);
+  return service.getMyShifts();
+});
+
+// Upcoming shifts for dashboard
+final upcomingShiftsProvider = FutureProvider<List<Shift>>((ref) {
+  final service = ref.watch(shiftServiceProvider);
+  return service.getUpcomingShifts();
+});
