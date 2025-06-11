@@ -74,3 +74,49 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
     state = const AsyncValue.loading();
     try {
       await _authService.signIn(email: email, password: password);
+// Invalidate providers to refresh user data
+      _ref.invalidate(currentUserProvider);
+      _ref.invalidate(isAdminProvider);
+      _ref.invalidate(userRoleProvider);
+      _ref.invalidate(isLoggedInProvider);
+
+      state = const AsyncValue.data(null);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
+
+  Future<void> signOut() async {
+    state = const AsyncValue.loading();
+    try {
+      await _authService.signOut();
+
+      // Invalidate providers to clear user data
+      _ref.invalidate(currentUserProvider);
+      _ref.invalidate(isAdminProvider);
+      _ref.invalidate(userRoleProvider);
+      _ref.invalidate(allUsersProvider);
+      _ref.invalidate(isLoggedInProvider);
+
+      state = const AsyncValue.data(null);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    state = const AsyncValue.loading();
+    try {
+      await _authService.resetPassword(email);
+      state = const AsyncValue.data(null);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
+}
+
+final authNotifierProvider =
+    StateNotifierProvider<AuthNotifier, AsyncValue<void>>((ref) {
+  final authService = ref.watch(authServiceProvider);
+  return AuthNotifier(authService, ref);
+});
