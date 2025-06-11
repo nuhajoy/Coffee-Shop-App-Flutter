@@ -65,4 +65,105 @@ class ShiftService {
       throw Exception('Failed to load users: $e');
     }
   }
+// Get all shifts (admin only)
+  Future<List<Shift>> getAllShifts() async {
+    try {
+      final response = await _supabase
+          .from(AppConstants.shiftsTable)
+          .select('*')
+          .order('start_time', ascending: true);
+
+      return (response as List)
+          .map((json) => Shift.fromJson(json))
+          .toList();
+    } catch (e) {
+      print('Error getting all shifts: $e');
+      throw Exception('Failed to load shifts: $e');
+    }
+  }
+
+  // Get current user's shifts only
+  Future<List<Shift>> getMyShifts() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) return [];
+
+      // Try with user_id first, fallback to employee_email if user_id doesn't exist
+      try {
+        final response = await _supabase
+            .from(AppConstants.shiftsTable)
+            .select('*')
+            .eq('user_id', user.id)
+            .order('start_time', ascending: true);
+
+        return (response as List)
+            .map((json) => Shift.fromJson(json))
+            .toList();
+      } catch (e) {
+        // Fallback: query by email if user_id column doesn't exist
+        final userEmail = user.email;
+        if (userEmail != null) {
+          final response = await _supabase
+              .from(AppConstants.shiftsTable)
+              .select('*')
+              .eq('employee_email', userEmail)
+              .order('start_time', ascending: true);
+
+          return (response as List)
+              .map((json) => Shift.fromJson(json))
+              .toList();
+        }
+        return [];
+      }
+    } catch (e) {
+      print('Error getting my shifts: $e');
+      return []; // Return empty list instead of throwing
+    }
+  }
+
+  // Get upcoming shifts for current user (for dashboard)
+  Future<List<Shift>> getUpcomingShifts() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) return [];
+
+
+      final now = DateTime.now();
+
+      // Try with user_id first, fallback to employee_email
+      try {
+        final response = await _supabase
+            .from(AppConstants.shiftsTable)
+            .select('*')
+            .eq('user_id', user.id)
+            .gte('start_time', now.toIso8601String())
+            .order('start_time', ascending: true)
+            .limit(3);
+
+        return (response as List)
+            .map((json) => Shift.fromJson(json))
+            .toList();
+      } catch (e) {
+        // Fallback: query by email
+        final userEmail = user.email;
+        if (userEmail != null) {
+          final response = await _supabase
+              .from(AppConstants.shiftsTable)
+              .select('*')
+              .eq('employee_email', userEmail)
+              .gte('start_time', now.toIso8601String())
+              .order('start_time', ascending: true)
+              .limit(3);
+
+          return (response as List)
+              .map((json) => Shift.fromJson(json))
+              .toList();
+        }
+        return [];
+      }
+    } catch (e) {
+      print('Error getting upcoming shifts: $e');
+      return [];
+    }
+  }
 
