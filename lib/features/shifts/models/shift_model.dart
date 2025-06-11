@@ -40,3 +40,44 @@ class Shift {
           : null,
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'employee_name': employeeName,
+      'employee_email': employeeEmail,
+      'start_time': startTime.toIso8601String(),
+      'end_time': endTime.toIso8601String(),
+      'status': status,
+      'notes': notes,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+    };
+  }
+
+  Shift copyWith({
+    String? id,
+    String? userId,
+    String? employeeName,
+    String? employeeEmail,
+    DateTime? startTime,
+    DateTime? endTime,
+    String? status,
+    String? notes,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Shift(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      employeeName: employeeName ?? this.employeeName,
+      employeeEmail: employeeEmail ?? this.employeeEmail,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      status: status ?? this.status,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+}
