@@ -14,3 +14,12 @@ class RegisterScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+  UserRole _selectedRole = UserRole.employee; // Default to employee
