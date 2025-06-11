@@ -33,3 +33,23 @@ final isShiftAdminProvider = FutureProvider<bool>((ref) {
   final service = ref.watch(shiftServiceProvider);
   return service.isAdmin;
 });
+
+class ShiftNotifier extends StateNotifier<AsyncValue<void>> {
+  final Ref ref;
+  final ShiftService _service;
+
+  ShiftNotifier(this.ref, this._service) : super(const AsyncValue.data(null));
+
+  Future<void> addShift(Shift shift) async {
+    state = const AsyncValue.loading();
+    try {
+      await _service.addShift(shift);
+      // Invalidate all shift providers to refresh the data
+      ref.invalidate(shiftsProvider);
+      ref.invalidate(myShiftsProvider);
+      ref.invalidate(upcomingShiftsProvider);
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
