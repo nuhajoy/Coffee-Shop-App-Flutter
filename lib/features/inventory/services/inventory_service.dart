@@ -74,4 +74,63 @@ class InventoryService {
     }
   }
 
+  // Delete inventory item
+  Future<void> deleteItem(String id) async {
+    try {
+      await _supabase.from(_tableName).delete().eq('id', id);
+    } catch (e) {
+      throw Exception('Failed to delete inventory item: $e');
+    }
+  }
+
+  // Get low stock items
+  Future<List<InventoryItem>> getLowStockItems() async {
+    try {
+      final response = await _supabase
+          .from(_tableName)
+          .select()
+          .lte('quantity', AppConstants.lowStockThreshold)
+          .order('quantity', ascending: true);
+
+      return (response as List)
+          .map((item) => InventoryItem.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to get low stock items: $e');
+    }
+  }
+
+  // Get items by category
+  Future<List<InventoryItem>> getItemsByCategory(String category) async {
+    try {
+      final response = await _supabase
+          .from(_tableName)
+          .select()
+          .eq('category', category)
+          .order('name', ascending: true);
+
+      return (response as List)
+          .map((item) => InventoryItem.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to get items by category: $e');
+    }
+  }
+
+  // Update item quantity
+  Future<void> updateItemQuantity(String id, int newQuantity) async {
+    try {
+      await _supabase
+          .from(_tableName)
+          .update({
+        'quantity': newQuantity,
+        'updated_at': DateTime.now().toIso8601String()
+      })
+          .eq('id', id);
+    } catch (e) {
+      throw Exception('Failed to update item quantity: $e');
+    }
+  }
+}
+
 
