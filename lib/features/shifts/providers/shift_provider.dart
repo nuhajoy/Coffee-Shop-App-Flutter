@@ -53,3 +53,34 @@ class ShiftNotifier extends StateNotifier<AsyncValue<void>> {
       state = AsyncValue.error(e, st);
     }
   }
+  Future<void> updateShift(Shift shift) async {
+    state = const AsyncValue.loading();
+    try {
+      await _service.updateShift(shift);
+      ref.invalidate(shiftsProvider);
+      ref.invalidate(myShiftsProvider);
+      ref.invalidate(upcomingShiftsProvider);
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> deleteShift(String id) async {
+    state = const AsyncValue.loading();
+    try {
+      await _service.deleteShift(id);
+      ref.invalidate(shiftsProvider);
+      ref.invalidate(myShiftsProvider);
+      ref.invalidate(upcomingShiftsProvider);
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}
+final shiftNotifierProvider =
+StateNotifierProvider<ShiftNotifier, AsyncValue<void>>((ref) {
+  final service = ref.watch(shiftServiceProvider);
+  return ShiftNotifier(ref, service);
+});
