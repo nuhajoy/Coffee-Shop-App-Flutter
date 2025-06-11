@@ -166,4 +166,63 @@ class ShiftService {
       return [];
     }
   }
+  // Add shift (admin assigns to any user, employee can only add for themselves)
+  Future<void> addShift(Shift shift) async {
+    try {
+      final currentUser = _supabase.auth.currentUser;
+      if (currentUser == null) throw Exception('User not authenticated');
+
+      await _supabase
+          .from(AppConstants.shiftsTable)
+          .insert({
+        'user_id': shift.userId,
+        'employee_name': shift.employeeName,
+        'employee_email': shift.employeeEmail,
+        'start_time': shift.startTime.toIso8601String(),
+        'end_time': shift.endTime.toIso8601String(),
+        'status': shift.status,
+        'notes': shift.notes,
+      });
+    } catch (e) {
+      print('Error adding shift: $e');
+      throw Exception('Failed to add shift: $e');
+    }
+  }
+
+  // Update shift
+  Future<void> updateShift(Shift updatedShift) async {
+    try {
+      await _supabase
+          .from(AppConstants.shiftsTable)
+          .update({
+        'user_id': updatedShift.userId,
+        'employee_name': updatedShift.employeeName,
+        'employee_email': updatedShift.employeeEmail,
+        'start_time': updatedShift.startTime.toIso8601String(),
+        'end_time': updatedShift.endTime.toIso8601String(),
+        'status': updatedShift.status,
+        'notes': updatedShift.notes,
+        'updated_at': DateTime.now().toIso8601String(),
+      })
+          .eq('id', updatedShift.id);
+    } catch (e) {
+      print('Error updating shift: $e');
+      throw Exception('Failed to update shift: $e');
+    }
+  }
+
+  // Delete shift
+  Future<void> deleteShift(String id) async {
+    try {
+      await _supabase
+          .from(AppConstants.shiftsTable)
+          .delete()
+          .eq('id', id);
+    } catch (e) {
+      print('Error deleting shift: $e');
+      throw Exception('Failed to delete shift: $e');
+    }
+  }
+}
+
 
