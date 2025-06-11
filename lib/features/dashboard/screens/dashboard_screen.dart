@@ -171,9 +171,9 @@ class DashboardScreen extends ConsumerWidget {
     children: [
     const Icon(Icons.error_outline, size: 48, color: Colors.red),
     const SizedBox(height: 8),
-    Text(
+    const Text(
     'Unable to load shifts',
-    style: const TextStyle(
+    style: TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,
     ),
