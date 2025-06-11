@@ -24,3 +24,45 @@ class ShiftService {
       return 'User';
     }
   }
+  // Get current user's role
+  Future<String> get currentUserRole async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) return 'employee';
+
+      final response = await _supabase
+          .from(AppConstants.usersTable)
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+      return response['role'] ?? 'employee';
+    } catch (e) {
+      print('Error getting user role: $e');
+      return 'employee';
+    }
+  }
+
+  // Check if current user is admin
+  Future<bool> get isAdmin async {
+    final role = await currentUserRole;
+    return role == 'admin';
+  }
+
+  // Get all users (for admin to assign shifts)
+  Future<List<auth_models.User>> getAllUsers() async {
+    try {
+      final response = await _supabase
+          .from(AppConstants.usersTable)
+          .select('*')
+          .order('full_name', ascending: true);
+
+      return (response as List)
+          .map((json) => auth_models.User.fromJson(json))
+          .toList();
+    } catch (e) {
+      print('Error getting all users: $e');
+      throw Exception('Failed to load users: $e');
+    }
+  }
+
