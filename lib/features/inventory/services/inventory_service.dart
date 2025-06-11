@@ -24,3 +24,19 @@ class InventoryService {
     }
   }
 
+   // Get inventory item by ID
+  Future<InventoryItem> getItemById(String id) async {
+    try {
+      final response = await _supabase
+          .from(_tableName)
+          .select()
+          .eq('id', id)
+          .single();
+
+      return InventoryItem.fromJson(response as Map<String, dynamic>);
+    } catch (e) {
+      throw Exception('Failed to get inventory item: $e');
+    }
+  }
+
+
